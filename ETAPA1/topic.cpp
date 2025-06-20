@@ -9,7 +9,7 @@ Topic::Topic(string topicName) {
     // Inicializa el vector de suscriptores
 }
 
-void Topic::suscribe(Subscriber* s) {
+void Topic::subscribe(Subscriber* s) {
     // Agrega un suscriptor al vector de suscriptores
     subscribers.push_back(s);
 }

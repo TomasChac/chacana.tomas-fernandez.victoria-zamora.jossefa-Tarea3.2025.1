@@ -1,17 +1,16 @@
 #define SUBSCRIBER_H
 #ifndef SUBSCRIBER_H
 #include "Component.h"
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include <iostream>
-#include <vector>
+#include<string>
+
+
 using namespace std;
 
 class Subscriber : public Component{
 
     public:
         Subscriber();
+        Subscriber(string name, string topicName);
         void update(string message);
 };
 #endif // SUBSCRIBER_H

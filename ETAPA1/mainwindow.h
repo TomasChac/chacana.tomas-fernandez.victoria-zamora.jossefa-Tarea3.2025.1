@@ -19,5 +19,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+    VideoPublisher* videoPublisher;
+    VideoFollower* videoFollower;
 };
 #endif // MAINWINDOW_H

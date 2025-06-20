@@ -1,12 +1,12 @@
 #define PUBLISHER_H
 #ifndef PUBLISHER_H
-#include "Component.h"
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include <iostream>
+#include "Component.h"  // << necesario para que conozca la clase Component
+#include "Publisher.h"   // << necesario para que conozca la clase Publisher
+#include "Broker.h"
+#include "Topic.h"
+#include <string>
+
 using namespace std;
-#include "topic.h"
 
 class Publisher : public Component{
 

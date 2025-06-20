@@ -11,11 +11,23 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    topic.cpp
+    topic.cpp \
+    broker.cpp \
+    component.cpp \
+    subscriber.cpp \
+    publisher.cpp \
+    videopublisher.cpp
 
 HEADERS += \
     mainwindow.h \
-    topic.h
+    topic.h \
+    broker.h \
+    component.h \
+    subscriber.h \
+    publisher.h \
+    videofollower.h \
+    videopublisher.h
+
 
 FORMS += \
     mainwindow.ui
