@@ -16,5 +16,5 @@ class Broker {
     
     private:
         vector<Topic*> topics;
-}
+};
 #endif // BROKER_H

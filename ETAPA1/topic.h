@@ -7,13 +7,14 @@
 
 using namespace std;
 
-class Subscriber;  // << declaración adelantada necesaria para usar punteros a Subscriber
+class Subscriber;    // << declaración adelantada necesaria para usar punteros a Subscriber
+
 class Topic
 {
 public:
 
     Topic(string topicName);
-    void subscribe(Subscriber* s);
+    void subscribe(Subscriber*);
     void notify(string message);
     bool isSubscribed(string name);
     string getTopicName();

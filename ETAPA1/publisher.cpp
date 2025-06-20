@@ -1,12 +1,15 @@
 #include "publisher.h"
 #include <string>
+#include "topic.h"
+#include "publisher.h"
+#include "broker.h"
 
 using namespace std;
-//Publisher::Publisher() {
+Publisher::Publisher() {
     // Constructor por defecto
-//}
+}
 
-Publisher::Publisher(std::string name, std::string topicName) : Component() {
+Publisher::Publisher(string name, Broker* broker, string topicName) : Component() {
 
     this->topic= broker->createOrGetTopic(topicName);
 }

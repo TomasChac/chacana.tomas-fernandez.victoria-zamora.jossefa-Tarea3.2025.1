@@ -38,6 +38,6 @@ bool Broker::suscribe(Subscriber* s) {
 //            return false; // Retorna false si no se pudo crear o obtener el topic
 //        }
     // Suscribe al suscriptor al topic
-    topic->suscribe(s);
+    topic->subscribe(s);
     return true; // Retorna true si la suscripción fue exitosa
 }

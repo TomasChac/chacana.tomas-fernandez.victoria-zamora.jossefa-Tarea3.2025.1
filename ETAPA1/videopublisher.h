@@ -12,7 +12,7 @@ class VideoPublisher : public QWidget, public Publisher
 
     Q_OBJECT
 public:
-    explicit VideoPublisher(string name, string topicName, QWidget* parent = nullptr);
+    explicit VideoPublisher(string name, Broker* broker, string topicName, QWidget* parent = nullptr);
 
 signals:
     void urlPublicada (const QString& url); // Cambiado a QString para compatibilidad con Qt

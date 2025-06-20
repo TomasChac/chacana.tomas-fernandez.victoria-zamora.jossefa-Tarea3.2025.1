@@ -1,14 +1,13 @@
 #include "videofollower.h"
 #include <QVBoxLayout>
 #include <QString>
-#include <QSisePolicy>
-
+#include "subscriber.h"
 // Constructor por defecto de la clase VideoFollower
-VideoFollower::VideoFollower(string name, QWidget *parent)
+VideoFollower::VideoFollower(std::string name, std::string topicName, QWidget *parent)
     : QWidget(parent), Subscriber(name, topicName)
 {
 
-    buton = new QPushButton("Esperando URL", this);
+    boton = new QPushButton("Esperando URL", this);
     //buton->setFixedSize(10, 10, 200, 50);
     boton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
@@ -18,8 +17,8 @@ VideoFollower::VideoFollower(string name, QWidget *parent)
     setLayout(layout);
 }
     // Sobrescribe el método update para cambiar el texto del botón
-void VideoFollower::update(string message)
+void VideoFollower::update(const QString& message)
 {
-boton->setText(QString::fromStdString(message));
+boton->setText(message);
 }
 

@@ -6,8 +6,8 @@
 using namespace std;
 
 // Constructor de VideoPublisher
-VideoPublisher::VideoPublisher(std::string name, std::string topicName, QWidget* parent)
-    : QWidget(parent), Publisher(name, topicName)
+VideoPublisher::VideoPublisher(std::string name, Broker* broker, std::string topicName, QWidget* parent)
+    : QWidget(parent), Publisher(name, broker, topicName)
 {
     // Crea el campo de texto donde el usuario ingresa la URL
     campoUrl = new QLineEdit(this);

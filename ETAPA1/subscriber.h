@@ -1,5 +1,5 @@
-#define SUBSCRIBER_H
 #ifndef SUBSCRIBER_H
+#define SUBSCRIBER_H
 #include "Component.h"
 #include<string>
 

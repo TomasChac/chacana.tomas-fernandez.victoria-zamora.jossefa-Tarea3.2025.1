@@ -16,7 +16,8 @@ SOURCES += \
     component.cpp \
     subscriber.cpp \
     publisher.cpp \
-    videopublisher.cpp
+    videopublisher.cpp \
+    videofollower.cpp
 
 HEADERS += \
     mainwindow.h \

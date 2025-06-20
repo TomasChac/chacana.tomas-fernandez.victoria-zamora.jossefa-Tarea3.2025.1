@@ -14,8 +14,9 @@ public:
     explicit VideoFollower(std::string name, std::string topicName, QWidget* parent = nullptr);
 
 public slots:
-    //void actualizarBoton(const string& url); //Qstring o string?
-    void update(string message) override;
+    // Sobrescribe el método update para cambiar el texto del botón
+    void update(const QString& message);
+
 private:
     QPushButton* boton;
 };
