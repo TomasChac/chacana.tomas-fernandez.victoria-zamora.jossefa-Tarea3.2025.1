@@ -12,7 +12,8 @@ class Publisher : public Component{
 
     public:
         Publisher();
-        void publicar(string message);
+        Publisher(string name, string topicName);
+        void publicar(std::string message);
     private:
         Topic* topic; // Puntero al topic al que publica
 }

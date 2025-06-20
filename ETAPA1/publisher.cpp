@@ -1,16 +1,17 @@
 #include "publisher.h"
+#include <string>
 
-
-Publisher::Publisher() {
+using namespace std;
+//Publisher::Publisher() {
     // Constructor por defecto
-}
+//}
 
-Publisher::Publisher(string name, string topicName) : Component() {
+Publisher::Publisher(std::string name, std::string topicName) : Component() {
 
     this->topic= broker->createOrGetTopic(topicName);
 }
 
-void Publisher::publicar(string message) {
+void Publisher::publicar(std::string message) {
 
     topic->notify(message);
 }

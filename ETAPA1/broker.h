@@ -1,10 +1,10 @@
 #ifndef BROKER_H
 #define BROKER_H
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include <iostream>
+#include <string>
+#include <vector>
+#include "Topic.h"
+#include "Subscriber.h"
 using namespace std;
 
 class Broker {

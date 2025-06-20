@@ -1,11 +1,14 @@
 #include"subscriber.h"
 #include "broker.h"
+#include <string>
+
+using namespace std;
 
 Subscriber::Subscriber() {
     // Constructor por defecto
 }
 
-Subscriber::Subscriber(string name, string topicName) : Component() {
+Subscriber::Subscriber(std::string name, std::string topicName) : Component() {
 
 }
 

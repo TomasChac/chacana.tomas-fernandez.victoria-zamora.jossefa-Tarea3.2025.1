@@ -1,12 +1,14 @@
 #include "component.h"
 #include <iostream>
+#include <string>
 
+using namespace std;
 
 Component::Component() {
     name = "";
     topicName = "";
 }
-Component::Component(string name, string topicName) {
+Component::Component(std::string name, std::string topicName) {
     this->name = name;
     this->topicName = topicName;
 }

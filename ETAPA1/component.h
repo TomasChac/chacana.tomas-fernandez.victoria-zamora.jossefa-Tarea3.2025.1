@@ -10,9 +10,11 @@ using namespace std;
 class Component{
     public:
         Component();
+        Component(string name, string topicName);
+        virtual ~Component();
+        
         string getName();
         string getTopicName();
-        virtual ~Component();
 
     protected:
         string name;

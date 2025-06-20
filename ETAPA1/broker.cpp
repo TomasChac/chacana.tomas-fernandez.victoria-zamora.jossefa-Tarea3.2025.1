@@ -1,11 +1,14 @@
 #include "broker.h"
 #include "topic.h"
+#include <string>
+
+using namespace std;
 
 Broker::Broker() {
     // El vector topics se inicializa automáticamente como vacío
 }
 
-Topic* Broker::createOrGetTopic(string topicName) {
+Topic* Broker::createOrGetTopic(std::string topicName) {
     // Busca si el topic ya existe
     for (Topic* topic : topics) {
         if (topic->getTopicName() == topicName) {

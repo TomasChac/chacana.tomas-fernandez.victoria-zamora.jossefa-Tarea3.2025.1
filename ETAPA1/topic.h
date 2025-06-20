@@ -11,10 +11,12 @@ class Subscriber;  // << declaración adelantada necesaria para usar punteros a 
 class Topic
 {
 public:
-    Topic();
-    void sunscribe(Subscriber* s);
+
+    Topic(string topicName);
+    void subscribe(Subscriber* s);
     void notify(string message);
     bool isSubscribed(string name);
+    string getTopicName();
 
 private:
     string topicName;

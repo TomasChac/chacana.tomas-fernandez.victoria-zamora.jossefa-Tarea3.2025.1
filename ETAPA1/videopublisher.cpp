@@ -1,6 +1,9 @@
 #include "videopublisher.h"
 #include <QVBoxLayout>
 #include <QString>
+#include <string>
+
+using namespace std;
 
 // Constructor de VideoPublisher
 VideoPublisher::VideoPublisher(std::string name, std::string topicName, QWidget* parent)
