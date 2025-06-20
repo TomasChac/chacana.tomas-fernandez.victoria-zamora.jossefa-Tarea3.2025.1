@@ -11,6 +11,6 @@ class Subscriber : public Component{
     public:
         Subscriber();
         Subscriber(string name, string topicName);
-        void update(string message);
+        virtual void update(string message);
 };
 #endif // SUBSCRIBER_H

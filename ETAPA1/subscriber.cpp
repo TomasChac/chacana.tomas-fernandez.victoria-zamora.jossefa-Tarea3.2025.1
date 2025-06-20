@@ -12,3 +12,6 @@ Subscriber::Subscriber(std::string name, std::string topicName) : Component() {
 
 }
 
+void Subscriber::update(std::string message) {
+    // Puedes dejarlo vacío si es una clase base
+}

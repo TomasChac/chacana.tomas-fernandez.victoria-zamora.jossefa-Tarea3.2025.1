@@ -1,6 +1,7 @@
 #include "topic.h"
 #include "subscriber.h"
 #include <string>
+#include "videofollower.h"
 using namespace std;
 
 //Constructor por defecto de la clase Topic
@@ -15,9 +16,14 @@ void Topic::subscribe(Subscriber* s) {
     subscribers.push_back(s);
 }
 
-void Topic::notify(std::string message) {
+void Topic::notify(string message) {
     // Notifica a todos los suscriptores con el mensaje
     for (Subscriber* subscriber : subscribers) {
         subscriber->update(message);
     }
+}
+
+string Topic::getTopicName(){
+    // Devuelve el nombre del topic
+    return topicName;
 }

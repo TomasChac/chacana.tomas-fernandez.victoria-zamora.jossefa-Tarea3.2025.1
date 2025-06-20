@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "videopublisher.h"
 #include "videofollower.h"
+#include "broker.h"
+#include <QVBoxLayout>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -14,17 +16,14 @@ MainWindow::MainWindow(QWidget *parent)
     videoPublisher = new VideoPublisher("VideoPublisher", broker, "video_topic", this);
     videoFollower = new VideoFollower("VideoFollower", "video_topic", this);
 
-   // Crear un layout vertical
-    QVBoxLayout* layout = new QVBoxLayout;
-
-    // Agregar los widgets al layout
-    layout->addWidget(videoPublisher);
-    layout->addWidget(videoFollower);
-
-    // Crear un widget central y asignarle el layout
     QWidget* central = new QWidget(this);
+
+    // Configurar el layout de la ventana principal
+    QVBoxLayout* layout = new QVBoxLayout(central);
+    layout->addWidget(videoPublisher); // Agregar el VideoPublisher al layout 
+    layout->addWidget(videoFollower); // Agregar el VideoFollower al layout
     central->setLayout(layout);
-    setCentralWidget(central);
+    setCentralWidget(central); // Establecer el widget central de la ventana principal
 
     // Conectar la señal urlPublicada del VideoPublisher al slot update del VideoFollower
     connect(videoPublisher, &VideoPublisher::urlPublicada, videoFollower, &VideoFollower::update);
