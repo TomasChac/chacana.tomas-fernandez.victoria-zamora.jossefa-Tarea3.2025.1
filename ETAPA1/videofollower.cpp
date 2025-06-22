@@ -14,6 +14,7 @@ VideoFollower::VideoFollower(std::string name, std::string topicName, QWidget *p
     // Crear el reproductor de video
     mediaPlayer = new QMediaPlayer(this);
     videoWidget = new QVideoWidget(this);
+    mediaPlayer->setVideoOutput(videoWidget);
 
     // Crear y configurar el layout vertical
     QVBoxLayout* layout = new QVBoxLayout(this);
@@ -28,7 +29,7 @@ VideoFollower::VideoFollower(std::string name, std::string topicName, QWidget *p
 void VideoFollower::update(const QString& message)
 {
     boton->setText(message);
-    ultimoUrl = message;
+    ultimoUrl = message; // Guarda el último URL recibido
 }
 
 void VideoFollower::reproducirVideo()

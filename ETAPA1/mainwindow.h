@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 #include "videopublisher.h"
 #include "videofollower.h"
+#include "gpscarpublisher.h"
+#include "gpscarfollower.h"
 #include "broker.h"
 #include <QMainWindow>
 
@@ -24,5 +26,7 @@ private:
     Broker* broker; // Instancia del broker
     VideoPublisher* videoPublisher;
     VideoFollower* videoFollower;
+    GPSCarPublisher* gpsPublisher;
+    GPSCarFollower* gpsFollower;
 };
 #endif // MAINWINDOW_H
