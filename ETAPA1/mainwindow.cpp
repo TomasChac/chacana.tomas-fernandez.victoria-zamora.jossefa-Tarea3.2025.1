@@ -31,10 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     central->setLayout(layout);
     setCentralWidget(central); // Establecer el widget central de la ventana principal
     
-    // Conecta la señal de publicación del publisher al slot update del follower
-    connect(gpsPublisher, &GPSCarPublisher::publicar, gpsFollower, [=](const std::string& msg){
-        gpsFollower->update(QString::fromStdString(msg));
-        });
+
     // Conectar la señal urlPublicada del VideoPublisher al slot update del VideoFollower
     connect(videoPublisher, &VideoPublisher::urlPublicada, videoFollower, &VideoFollower::update);
     

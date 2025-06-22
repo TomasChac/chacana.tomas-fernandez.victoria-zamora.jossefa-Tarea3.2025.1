@@ -4,7 +4,7 @@
 #include <QTextStream>
 #include <QMessageBox>
 #include <QStringList>
-#include <QRegExp>
+#include <QRegularExpression>
 
 // Estructura para almacenar un dato GPS
 struct GPSData {
@@ -18,8 +18,8 @@ GPSCarPublisher::GPSCarPublisher(std::string name, Broker* broker, std::string t
 {
     // Crear botones
     botonCargar = new QPushButton("Cargar archivo GPS", this);
-    botonIniciar = new QPushButton("Iniciar publicación", this);
-    botonIniciar->setEnabled(false);
+    botonPublicar = new QPushButton("Iniciar publicación", this);
+    botonPublicar->setEnabled(false);
 
     // Crear timer
     timer = new QTimer(this);
@@ -27,12 +27,12 @@ GPSCarPublisher::GPSCarPublisher(std::string name, Broker* broker, std::string t
     // Layout
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(botonCargar);
-    layout->addWidget(botonIniciar);
+    layout->addWidget(botonPublicar);
     setLayout(layout);
 
     // Conexiones
     connect(botonCargar, &QPushButton::clicked, this, &GPSCarPublisher::cargarArchivoGPS);
-    connect(botonIniciar, &QPushButton::clicked, [this]() {
+    connect(botonPublicar, &QPushButton::clicked, [this]() {
         currentIndex = 0;
         timer->start(1000); // Publicar cada 1 segundo
     });
@@ -83,7 +83,7 @@ void GPSCarPublisher::cargarArchivoGPS()
     // Leer el archivo línea por línea
     while (!in.atEnd()) {
         QString line = in.readLine();
-        QStringList parts = line.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
+        QStringList parts = line.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
         if (parts.size() == 3) {
             bool ok1, ok2, ok3;
             double t = parts[0].toDouble(&ok1);
@@ -101,10 +101,10 @@ void GPSCarPublisher::cargarArchivoGPS()
     currentIndex = 0;
 
     if (!datosInterpolados.empty()) {
-        botonIniciar->setEnabled(true);
+        botonPublicar->setEnabled(true);
         QMessageBox::information(this, "Éxito", "Archivo cargado e interpolado correctamente.");
     } else {
-        botonIniciar->setEnabled(false);
+        botonPublicar->setEnabled(false);
         QMessageBox::warning(this, "Error", "No se encontraron datos válidos en el archivo.");
     }
 }

@@ -1,10 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include "videopublisher.h"
-#include "videofollower.h"
-#include "gpscarpublisher.h"
-#include "gpscarfollower.h"
-#include "broker.h"
+
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -23,10 +19,5 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    Broker* broker; // Instancia del broker
-    VideoPublisher* videoPublisher;
-    VideoFollower* videoFollower;
-    GPSCarPublisher* gpsPublisher;
-    GPSCarFollower* gpsFollower;
 };
 #endif // MAINWINDOW_H

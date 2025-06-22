@@ -12,6 +12,7 @@ CONFIG += c++17
 
 SOURCES += \
     gpscarpublisher.cpp \
+    gpscarfollower.cpp\
     main.cpp \
     mainwindow.cpp \
     topic.cpp \

@@ -1,5 +1,6 @@
 #include "gpscarfollower.h"
 #include <QDateTime>
+#include <QRegularExpression>
 
 GPSCarFollower::GPSCarFollower(std::string name, std::string topicName, QWidget* parent)
     : QWidget(parent), Subscriber(name, topicName)
@@ -15,7 +16,7 @@ GPSCarFollower::GPSCarFollower(std::string name, std::string topicName, QWidget*
 void GPSCarFollower::update(const QString& message)
 {
     // Espera mensajes en formato: "<tiempo> <x> <y>"
-    QStringList parts = message.split(QRegExp("\\s+"), Qt::SkipEmptyParts);
+    QStringList parts = message.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
     if (parts.size() >= 3) {
         bool ok1, ok2, ok3;
         double t = parts[0].toDouble(&ok1);

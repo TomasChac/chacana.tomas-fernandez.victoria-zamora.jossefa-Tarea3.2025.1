@@ -17,8 +17,8 @@ public:
     explicit GPSCarPublisher(string name, Broker* broker, string topicName, QWidget* parent = nullptr);
 
 private slots:
-    void publicarDatosGPS(); // Slot para publicar los datos GPS
-    void cargarDatosDesdeArchivo(); // Slot para cargar datos desde un archivo
+    void cargarArchivoGPS(); // Slot para cargar datos desde un archivo
+    void publicarDatoGPS();    // Slot para publicar un dato GPS
 
 private:
     void interpolarDatos(); // Slot para interpolar datos GPS
@@ -36,6 +36,7 @@ private:
     QPushButton* botonPublicar; // Botón para publicar los datos GPS
     int currentIndex; // Índice del dato GPS actual a publicar
     double elapsedTime; // Tiempo transcurrido desde el último envío
+    QTimer* timer; // Temporizador para publicar datos periódicamente
 
 
 };

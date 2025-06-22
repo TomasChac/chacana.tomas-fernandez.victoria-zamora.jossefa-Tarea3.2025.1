@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QString>
 #include <QVBoxLayout>
+#include <QObject>
 
 class GPSCarFollower : public QWidget, public Subscriber
 {
