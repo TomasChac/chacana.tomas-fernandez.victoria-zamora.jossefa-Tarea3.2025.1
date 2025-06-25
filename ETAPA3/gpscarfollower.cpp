@@ -1,16 +1,20 @@
 #include "gpscarfollower.h"
 #include <QDateTime>
 #include <QRegularExpression>
+#include <QVBoxLayout>
 
 GPSCarFollower::GPSCarFollower(std::string name, std::string topicName, QWidget* parent)
     : QWidget(parent), Subscriber(name, topicName)
 {
     infoLabel = new QLabel("Esperando posición...", this);
+    botonMostrar = new QPushButton("Mostrar Recorrido", this);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(new QLabel(QString("Seguimiento GPS de: %1").arg(QString::fromStdString(name)), this));
     layout->addWidget(infoLabel);
+    layout->addWidget(botonMostrar);
     setLayout(layout);
+    connect(botonMostrar, &QPushButton::clicked, this, &GPSCarFollower::mostrarRecorrido);
 }
 
 void GPSCarFollower::update(const QString& message)
@@ -34,4 +38,9 @@ void GPSCarFollower::update(const QString& message)
         }
     }
     infoLabel->setText("Error en mensaje: " + message);
+}
+
+void GPSCarFollower::mostrarRecorrido()
+{
+    emit abrirVentanaGPS(posiciones);
 }
