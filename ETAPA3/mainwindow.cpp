@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "gpscarpublisher.h"
-#include "gpscarfollower.h"
 #include "videopublisher.h"
 #include "videofollower.h"
 #include "broker.h"
@@ -12,30 +10,46 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    // Crear una instancia del Broker
+
     broker = new Broker();
-    // Crear instancias de VideoPublisher y VideoFollower
+ 
+
     videoPublisher = new VideoPublisher("VideoPublisher", broker, "video_topic", this);
     videoFollower = new VideoFollower("VideoFollower", "video_topic", this);
-    gpsPublisher = new GPSCarPublisher("GPSPublisher", broker, "gps_topic", this);
-    gpsFollower = new GPSCarFollower("GPSFollower", "gps_topic", this);
 
-    QWidget* central = new QWidget(this);
+    tabWidget = new QTabWidget(this); // Crear el QTabWidget
+    QWidget* central = new QWidget(this); // Crear un widget central para la ventana principal
+    QVBoxLayout* layout = new QVBoxLayout(central); // Usar QVBoxLayout para organizar los widgets verticalmente
+    layout->addWidget(videoPublisher);
+    layout->addWidget(videoFollower);
+    layout->addWidget(tabWidget);
 
-    // Configurar el layout de la ventana principal
-    QVBoxLayout* layout = new QVBoxLayout(central);
-    layout->addWidget(videoPublisher); // Agregar el VideoPublisher al layout 
-    layout->addWidget(videoFollower); // Agregar el VideoFollower al layout
-    layout->addWidget(gpsPublisher); // Agregar el GPSCarPublisher al layout
-    layout->addWidget(gpsFollower); // Agregar el GPSCarFollower al layout
+    // Conectar la señal 
+    connect(videoFollower, &VideoFollower::abrirPestanaVideo, this, [this](const QString& url){
+        QWidget* videoWindow = new QWidget();
+        videoWindow->setAttribute(Qt::WA_DeleteOnClose);
+        videoWindow->setWindowTitle("Reproductor de Video");
+        videoWindow->resize(800, 600);
+
+        QVBoxLayout* layout = new QVBoxLayout(videoWindow);
+        QVideoWidget* videoWidget = new QVideoWidget(videoWindow);
+        QMediaPlayer* player = new QMediaPlayer(videoWindow);
+        player->setVideoOutput(videoWidget);
+        player->setSource(QUrl::fromUserInput(url));
+        player->play();
+        layout->addWidget(videoWidget);
+        videoWindow->setLayout(layout);
+
+        videoWindow->show();
+    });
+
+
+
     central->setLayout(layout);
-    setCentralWidget(central); // Establecer el widget central de la ventana principal
-    
+    setCentralWidget(central);
 
-    // Conectar la señal urlPublicada del VideoPublisher al slot update del VideoFollower
     connect(videoPublisher, &VideoPublisher::urlPublicada, videoFollower, &VideoFollower::update);
-    
-}   
+}
 
 MainWindow::~MainWindow()
 {

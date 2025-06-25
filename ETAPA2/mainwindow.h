@@ -5,6 +5,7 @@
 #include "videopublisher.h"
 #include "videofollower.h"
 #include <QMainWindow>
+#include <QTabWidget>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -25,6 +26,7 @@ private:
     Broker* broker; // Instancia del broker
     VideoPublisher* videoPublisher;
     VideoFollower* videoFollower;
+    QTabWidget* tabWidget;
 
 };
 #endif // MAINWINDOW_H

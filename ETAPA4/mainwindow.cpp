@@ -35,7 +35,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(addVideoSub, &QAction::triggered, this, &MainWindow::addVideoFollower);
     connect(addGPSSub, &QAction::triggered, this, &MainWindow::addGPSCarFollower);
 
-    QWidget* central = new QWidget(this);
 
     // Layouts
     QWidget* central = new QWidget(this);
@@ -89,7 +88,7 @@ void MainWindow::addVideoFollower() {
     if (!ok || topic.isEmpty()) return;
 
     auto* sub = new VideoFollower(name.toStdString(), topic.toStdString(), this);
-    if (broker->subscribe(sub)) {
+    if (broker->suscribe(sub)) {
         videoFollowers.append(sub);
         subLayout->addWidget(sub);
     } else {
@@ -118,7 +117,7 @@ void MainWindow::addGPSCarFollower() {
     if (!ok || topic.isEmpty()) return;
 
     auto* sub = new GPSCarFollower(name.toStdString(), topic.toStdString(), this);
-    if (broker->subscribe(sub)) {
+    if (broker->suscribe(sub)) {
         gpsFollowers.append(sub);
         subLayout->addWidget(sub);
     } else {

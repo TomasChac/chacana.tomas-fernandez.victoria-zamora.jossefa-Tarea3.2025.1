@@ -21,10 +21,11 @@ public slots:
 private slots:
     void reproducirVideo();  // nuevo slot
 
+signals:
+    void abrirPestanaVideo(const QString& url);
+
 private:
     QPushButton* boton;
-    QMediaPlayer* mediaPlayer;
-    QVideoWidget* videoWidget;
     QString ultimoUrl;
 };
 
