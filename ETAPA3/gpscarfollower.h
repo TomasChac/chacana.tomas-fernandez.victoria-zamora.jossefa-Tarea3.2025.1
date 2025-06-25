@@ -9,6 +9,7 @@
 #include <QObject>
 #include <QPushButton>  
 #include <QVector>
+#include <QTextEdit>
 #include "gpsdata.h"
 
 class GPSCarFollower : public QWidget, public Subscriber
@@ -30,6 +31,8 @@ private:
     QLabel* infoLabel;
     QPushButton* botonMostrar;
     QVector<GPSData> posiciones;
+    QWidget* gpsWindow = nullptr;
+    QTextEdit* textEdit = nullptr;
 };
 
 #endif // GPSCARFOLLOWER_H

@@ -113,7 +113,7 @@ void GPSCarPublisher::publicarDatoGPS() {
         QString mensaje = QString("%1 %2 %3").arg(dato.tiempo).arg(dato.x).arg(dato.y);
         qDebug() << "Publicando:" << mensaje; // <-- Esto te mostrará en la consola cada dato publicado
         publicar(mensaje.toStdString());
-        //emit datoPublicado(mensaje);
+        emit datoPublicado(mensaje);
         currentIndex++;
     } else {
         timer->stop();

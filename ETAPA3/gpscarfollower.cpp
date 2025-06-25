@@ -41,10 +41,45 @@ void GPSCarFollower::update(const QString& message)
             return;
         }
     }
+    
     infoLabel->setText("Error en mensaje: " + message);
+        if (gpsWindow && textEdit) {
+        QStringList lines;
+        for (const auto& pos : posiciones) {
+            lines << QString("%1 %2 %3").arg(pos.tiempo).arg(pos.x).arg(pos.y);
+        }
+        textEdit->setText(lines.join("\n"));
+    }
+
 }
 
+// gpscarfollower.cpp
 void GPSCarFollower::mostrarRecorrido()
 {
-    emit abrirVentanaGPS(posiciones);
+    if (!gpsWindow) {
+        gpsWindow = new QWidget();
+        gpsWindow->setAttribute(Qt::WA_DeleteOnClose);
+        gpsWindow->setWindowTitle("Recorrido GPS");
+        gpsWindow->resize(500, 500);
+
+        QVBoxLayout* layout = new QVBoxLayout(gpsWindow);
+
+        textEdit = new QTextEdit(gpsWindow);
+        textEdit->setReadOnly(true);
+
+        layout->addWidget(textEdit);
+        gpsWindow->setLayout(layout);
+
+        connect(gpsWindow, &QWidget::destroyed, this, [this]() {
+            gpsWindow = nullptr;
+            textEdit = nullptr;
+        });
+    }
+    // Actualiza el contenido
+    QStringList lines;
+    for (const auto& pos : posiciones) {
+        lines << QString("%1 %2 %3").arg(pos.tiempo).arg(pos.x).arg(pos.y);
+    }
+    textEdit->setText(lines.join("\n"));
+    gpsWindow->show();
 }
