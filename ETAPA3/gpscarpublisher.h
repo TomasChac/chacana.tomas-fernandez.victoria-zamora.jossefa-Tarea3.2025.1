@@ -7,6 +7,7 @@
 #include <QFileDialog>
 #include <vector>
 #include <string>
+#include "gpsdata.h"
 
 using namespace std;
 
@@ -22,13 +23,12 @@ private slots:
 
 private:
     void interpolarDatos(); // Slot para interpolar datos GPS
+
+signals:
+    void datoPublicado(const QString& mensaje); // Señal para notificar que se publicaron datos
+    
 private:
 
-    struct GPSData {
-    double tiempo;
-    double x;
-    double y;
-    };
 
     std::vector<GPSData> gpsData; // Datos GPS del coche
     std::vector<GPSData> datosInterpolados; // Datos GPS interpolados

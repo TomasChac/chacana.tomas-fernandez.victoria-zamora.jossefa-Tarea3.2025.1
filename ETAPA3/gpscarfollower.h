@@ -9,8 +9,7 @@
 #include <QObject>
 #include <QPushButton>  
 #include <QVector>
-#include <QPointF>
-
+#include "gpsdata.h"
 
 class GPSCarFollower : public QWidget, public Subscriber
 {
@@ -22,7 +21,7 @@ public slots:
     void update(const QString& message); // Slot para recibir mensajes
 
 signals:
-    void abrirVentanaGPS(const QVector<QPointF>& posiciones);
+    void abrirVentanaGPS(const QVector<GPSData>& posiciones); // Señal para abrir la ventana de recorrido GPS
 
 private slots:
     void mostrarRecorrido();
@@ -30,7 +29,7 @@ private slots:
 private:
     QLabel* infoLabel;
     QPushButton* botonMostrar;
-    QVector<QPointF> posiciones; // Guarda las posiciones recibidas
+    QVector<GPSData> posiciones;
 };
 
 #endif // GPSCARFOLLOWER_H

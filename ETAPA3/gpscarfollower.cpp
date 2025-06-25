@@ -1,4 +1,5 @@
 #include "gpscarfollower.h"
+#include "gpsdata.h"
 #include <QDateTime>
 #include <QRegularExpression>
 #include <QVBoxLayout>
@@ -18,7 +19,8 @@ GPSCarFollower::GPSCarFollower(std::string name, std::string topicName, QWidget*
 }
 
 void GPSCarFollower::update(const QString& message)
-{
+{   
+    qDebug() << "Follower recibió:" << message;
     // Espera mensajes en formato: "<tiempo> <x> <y>"
     QStringList parts = message.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
     if (parts.size() >= 3) {
@@ -28,6 +30,8 @@ void GPSCarFollower::update(const QString& message)
         double y = parts[2].toDouble(&ok3);
 
         if (ok1 && ok2 && ok3) {
+            posiciones.append({t,x,y}); // Guardar la posición
+            qDebug() << "Posición guardada:" << t << x << y;
             QString tiempo = QTime::currentTime().toString("HH:mm:ss");
             infoLabel->setText(QString("[%1] Posición: %2, %3 (t=%4)")
                                .arg(tiempo)

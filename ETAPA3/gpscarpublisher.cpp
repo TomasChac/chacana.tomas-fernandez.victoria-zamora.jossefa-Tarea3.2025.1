@@ -1,17 +1,14 @@
 #include "gpscarpublisher.h"
+#include "gpsdata.h"
 #include <QVBoxLayout>
 #include <QFile>
 #include <QTextStream>
 #include <QMessageBox>
 #include <QStringList>
 #include <QRegularExpression>
+#include <QDebug>
+#include <QWidget>
 
-// Estructura para almacenar un dato GPS
-struct GPSData {
-    double tiempo;
-    double x;
-    double y;
-};
 
 GPSCarPublisher::GPSCarPublisher(std::string name, Broker* broker, std::string topicName, QWidget* parent)
     : QWidget(parent), Publisher(name, broker, topicName), currentIndex(0)
@@ -109,17 +106,16 @@ void GPSCarPublisher::cargarArchivoGPS()
     }
 }
 
-void GPSCarPublisher::publicarDatoGPS()
-{
+// Método para publicar el dato GPS actual
+void GPSCarPublisher::publicarDatoGPS() {
     if (currentIndex < datosInterpolados.size()) {
         const auto& dato = datosInterpolados[currentIndex];
-        std::string mensaje = std::to_string(dato.tiempo) + " " +
-                              std::to_string(dato.x) + " " +
-                              std::to_string(dato.y);
-        this->publicar(mensaje);
+        QString mensaje = QString("%1 %2 %3").arg(dato.tiempo).arg(dato.x).arg(dato.y);
+        qDebug() << "Publicando:" << mensaje; // <-- Esto te mostrará en la consola cada dato publicado
+        publicar(mensaje.toStdString());
+        //emit datoPublicado(mensaje);
         currentIndex++;
     } else {
         timer->stop();
-        QMessageBox::information(this, "Fin", "Se han publicado todos los datos GPS.");
     }
 }

@@ -5,7 +5,9 @@
 #include "gpscarpublisher.h"
 #include "gpscarfollower.h"
 #include "broker.h"
+#include "gpsdata.h"
 #include <QVBoxLayout>
+#include <QTextEdit>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -22,14 +24,14 @@ MainWindow::MainWindow(QWidget *parent)
     gpsCarFollower = new GPSCarFollower("GPSCarFollower", "gps_topic", this);
 
 
-    tabWidget = new QTabWidget(this); // Crear el QTabWidget
+    //tabWidget = new QTabWidget(this); // Crear el QTabWidget
     QWidget* central = new QWidget(this); // Crear un widget central para la ventana principal
     QVBoxLayout* layout = new QVBoxLayout(central); // Usar QVBoxLayout para organizar los widgets verticalmente
     layout->addWidget(videoPublisher); // <-- Agrega el publicador de video
     layout->addWidget(videoFollower);   // <-- Agrega el publicador de video
     layout->addWidget(gpsCarPublisher);   // <-- Agrega el publicador de GPS
     layout->addWidget(gpsCarFollower);  // <-- Agrega el seguidor de GPS
-    layout->addWidget(tabWidget);   // <-- Agrega el QTabWidget
+    //layout->addWidget(tabWidget);   // <-- Agrega el QTabWidget
 
     // Conectar la señal 
     connect(videoFollower, &VideoFollower::abrirPestanaVideo, this, [this](const QString& url){
@@ -50,28 +52,26 @@ MainWindow::MainWindow(QWidget *parent)
         videoWindow->show();
     });
 
-    connect(gpsCarFollower, &GPSCarFollower::abrirVentanaGPS, this, [this](const QVector<QPointF>& posiciones){
-    QWidget* gpsWindow = new QWidget();
-    gpsWindow->setAttribute(Qt::WA_DeleteOnClose);
-    gpsWindow->setWindowTitle("Recorrido GPS");
-    gpsWindow->resize(500, 500);
+    connect(gpsCarFollower, &GPSCarFollower::abrirVentanaGPS, this, [this](const QVector<GPSData>& posiciones){
+        QWidget* gpsWindow = new QWidget();
+        gpsWindow->setAttribute(Qt::WA_DeleteOnClose);
+        gpsWindow->setWindowTitle("Recorrido GPS");
+        gpsWindow->resize(500, 500);
 
-    QVBoxLayout* layout = new QVBoxLayout(gpsWindow);
+        QVBoxLayout* layout = new QVBoxLayout(gpsWindow);
 
-    QGraphicsScene* scene = new QGraphicsScene(gpsWindow);
-    QGraphicsView* view = new QGraphicsView(scene, gpsWindow);
+        QTextEdit* textEdit = new QTextEdit(gpsWindow);
+        textEdit->setReadOnly(true);
 
-    // Dibuja las posiciones como puntos y líneas
-    for (int i = 0; i < posiciones.size(); ++i) {
-        scene->addEllipse(posiciones[i].x(), posiciones[i].y(), 4, 4, QPen(Qt::red), QBrush(Qt::red));
-        if (i > 0) {
-            scene->addLine(posiciones[i-1].x(), posiciones[i-1].y(), posiciones[i].x(), posiciones[i].y(), QPen(Qt::blue));
+        QStringList lines;
+        for (const auto& pos : posiciones) {
+            lines << QString("%1 %2 %3").arg(pos.tiempo).arg(pos.x).arg(pos.y);
         }
-    }
+        textEdit->setText(lines.join("\n"));
 
-    layout->addWidget(view);
-    gpsWindow->setLayout(layout);
-    gpsWindow->show();
+        layout->addWidget(textEdit);
+        gpsWindow->setLayout(layout);
+        gpsWindow->show();
 });
 
 
@@ -80,6 +80,7 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(central);
 
     connect(videoPublisher, &VideoPublisher::urlPublicada, videoFollower, &VideoFollower::update);
+    connect(gpsCarPublisher, &GPSCarPublisher::datoPublicado, gpsCarFollower, &GPSCarFollower::update);
 }
 
 MainWindow::~MainWindow()
