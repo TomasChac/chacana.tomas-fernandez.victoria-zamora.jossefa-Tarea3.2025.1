@@ -19,7 +19,7 @@ GPSCarFollower::GPSCarFollower(std::string name, std::string topicName, QWidget*
 }
 
 void GPSCarFollower::update(const QString& message)
-{   
+{
     qDebug() << "Follower recibió:" << message;
     // Espera mensajes en formato: "<tiempo> <x> <y>"
     QStringList parts = message.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
@@ -30,7 +30,7 @@ void GPSCarFollower::update(const QString& message)
         double y = parts[2].toDouble(&ok3);
 
         if (ok1 && ok2 && ok3) {
-            posiciones.append({t,x,y}); // Guardar la posición
+            posiciones.append({t, x, y}); // Guardar la posición
             qDebug() << "Posición guardada:" << t << x << y;
             QString tiempo = QTime::currentTime().toString("HH:mm:ss");
             infoLabel->setText(QString("[%1] Posición: %2, %3 (t=%4)")
@@ -38,19 +38,19 @@ void GPSCarFollower::update(const QString& message)
                                .arg(x)
                                .arg(y)
                                .arg(t));
+            // --- ACTUALIZA LA VENTANA AQUÍ ---
+            if (gpsWindow && textEdit) {
+                QStringList lines;
+                for (const auto& pos : posiciones) {
+                    lines << QString("%1 %2 %3").arg(pos.tiempo).arg(pos.x).arg(pos.y);
+                }
+                textEdit->setText(lines.join("\n"));
+            }
             return;
         }
     }
-    
-    infoLabel->setText("Error en mensaje: " + message);
-        if (gpsWindow && textEdit) {
-        QStringList lines;
-        for (const auto& pos : posiciones) {
-            lines << QString("%1 %2 %3").arg(pos.tiempo).arg(pos.x).arg(pos.y);
-        }
-        textEdit->setText(lines.join("\n"));
-    }
 
+    infoLabel->setText("Error en mensaje: " + message);
 }
 
 // gpscarfollower.cpp

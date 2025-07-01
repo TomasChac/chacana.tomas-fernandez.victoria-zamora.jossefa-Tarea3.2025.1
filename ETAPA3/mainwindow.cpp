@@ -24,14 +24,14 @@ MainWindow::MainWindow(QWidget *parent)
     gpsCarFollower = new GPSCarFollower("GPSCarFollower", "gps_topic", this);
 
 
-    //tabWidget = new QTabWidget(this); // Crear el QTabWidget
+
     QWidget* central = new QWidget(this); // Crear un widget central para la ventana principal
     QVBoxLayout* layout = new QVBoxLayout(central); // Usar QVBoxLayout para organizar los widgets verticalmente
     layout->addWidget(videoPublisher); // <-- Agrega el publicador de video
     layout->addWidget(videoFollower);   // <-- Agrega el publicador de video
     layout->addWidget(gpsCarPublisher);   // <-- Agrega el publicador de GPS
     layout->addWidget(gpsCarFollower);  // <-- Agrega el seguidor de GPS
-    //layout->addWidget(tabWidget);   // <-- Agrega el QTabWidget
+    
 
     // Conectar la señal 
     connect(videoFollower, &VideoFollower::abrirPestanaVideo, this, [this](const QString& url){
