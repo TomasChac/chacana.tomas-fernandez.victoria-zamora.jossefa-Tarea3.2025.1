@@ -106,7 +106,7 @@ void GPSCarPublisher::cargarArchivoGPS()
     }
 }
 
-// Método para publicar el dato GPS actual
+
 void GPSCarPublisher::publicarDatoGPS() {
     if (currentIndex < datosInterpolados.size()) {
         const auto& dato = datosInterpolados[currentIndex];

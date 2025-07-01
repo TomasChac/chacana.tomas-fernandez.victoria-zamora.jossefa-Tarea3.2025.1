@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QStringList>
 #include <QRegularExpression>
+#include <QLabel>
 
 // Estructura para almacenar un dato GPS
 struct GPSData {
@@ -16,7 +17,8 @@ struct GPSData {
 GPSCarPublisher::GPSCarPublisher(std::string name, Broker* broker, std::string topicName, QWidget* parent)
     : QWidget(parent), Publisher(name, broker, topicName), currentIndex(0)
 {
-    // Crear botones
+    // Crear Label con nombre 
+    QLabel* nameLabel = new QLabel(QString("Publisher: %1").arg(QString::fromStdString(name)), this);
     botonCargar = new QPushButton("Cargar archivo GPS", this);
     botonPublicar = new QPushButton("Iniciar publicación", this);
     botonPublicar->setEnabled(false);
@@ -26,6 +28,7 @@ GPSCarPublisher::GPSCarPublisher(std::string name, Broker* broker, std::string t
 
     // Layout
     QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(nameLabel); // Agrega el label arriba
     layout->addWidget(botonCargar);
     layout->addWidget(botonPublicar);
     setLayout(layout);

@@ -23,7 +23,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    Broker* broker; // Instancia del broker
+    Broker* broker;
     VideoPublisher* videoPublisher;
     VideoFollower* videoFollower;
     QTabWidget* tabWidget;

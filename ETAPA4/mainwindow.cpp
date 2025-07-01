@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
     mainLayout->addWidget(subScroll);
 
     setCentralWidget(central);
-    setWindowTitle("Broker Example");
+    setWindowTitle("");
     
 }   
 

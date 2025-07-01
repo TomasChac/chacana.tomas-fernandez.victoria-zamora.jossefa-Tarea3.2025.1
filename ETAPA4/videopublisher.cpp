@@ -1,6 +1,7 @@
 #include "videopublisher.h"
 #include <QVBoxLayout>
 #include <QString>
+#include <QLabel>
 #include <string>
 
 using namespace std;
@@ -9,6 +10,8 @@ using namespace std;
 VideoPublisher::VideoPublisher(std::string name, Broker* broker, std::string topicName, QWidget* parent)
     : QWidget(parent), Publisher(name, broker, topicName)
 {
+    // Label con el nombre
+    QLabel* nameLabel = new QLabel(QString("Publisher: %1").arg(QString::fromStdString(name)), this);
     // Crea el campo de texto donde el usuario ingresa la URL
     campoUrl = new QLineEdit(this);
 
@@ -17,6 +20,7 @@ VideoPublisher::VideoPublisher(std::string name, Broker* broker, std::string top
 
     // Crea un layout vertical y agrega los widgets
     QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(nameLabel); // Agrega el label con el nombre del publisher
     layout->addWidget(campoUrl); // Campo de texto para ingresar la URL
     layout->addWidget(botonPublicar); // Botón para publicar la URL
     setLayout(layout); // Establece el layout en la ventana

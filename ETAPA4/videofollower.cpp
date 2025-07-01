@@ -1,11 +1,13 @@
 #include "videofollower.h"
 #include <QVBoxLayout>
 #include <QString>
+#include <QLabel>
 #include "subscriber.h"
 // Constructor por defecto de la clase VideoFollower
 VideoFollower::VideoFollower(std::string name, std::string topicName, QWidget *parent)
     : QWidget(parent), Subscriber(name, topicName)
 {
+    QLabel* nameLabel = new QLabel(QString("Subscriber: %1").arg(QString::fromStdString(name)), this);
 
     boton = new QPushButton("Esperando URL", this);
     //buton->setFixedSize(10, 10, 200, 50);
@@ -18,6 +20,7 @@ VideoFollower::VideoFollower(std::string name, std::string topicName, QWidget *p
 
     // Crear y configurar el layout vertical
     QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(nameLabel); 
     layout->addWidget(boton);
     layout->addWidget(videoWidget);
     setLayout(layout);

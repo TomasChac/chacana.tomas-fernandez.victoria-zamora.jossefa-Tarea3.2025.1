@@ -5,9 +5,11 @@
 GPSCarFollower::GPSCarFollower(std::string name, std::string topicName, QWidget* parent)
     : QWidget(parent), Subscriber(name, topicName)
 {
-    infoLabel = new QLabel("Esperando posición...", this);
 
+    infoLabel = new QLabel("Esperando posición...", this);
+    QLabel* nameLabel = new QLabel(QString("Subscriber: %1").arg(QString::fromStdString(name)), this);
     QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(nameLabel); // Agrega el label arriba
     layout->addWidget(new QLabel(QString("Seguimiento GPS de: %1").arg(QString::fromStdString(name)), this));
     layout->addWidget(infoLabel);
     setLayout(layout);
