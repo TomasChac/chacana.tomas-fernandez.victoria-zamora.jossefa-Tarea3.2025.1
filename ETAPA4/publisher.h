@@ -9,13 +9,13 @@
 using namespace std;
 
 class Publisher : public Component{
+public:
+    Publisher();
+    Publisher(string name, Broker* broker, string topicName);
+    void publicar(const std::string& message);
 
-    public:
-        Publisher();
-        Publisher(string name, Broker* borker, string topicName);
-        void publicar(std::string message);
-    private:
-        Topic* topic; // Puntero al topic al que publica
-
+protected:
+    Broker* broker;
+    Topic* topic;
 };
 #endif // PUBLISHER_H

@@ -41,3 +41,10 @@ bool Broker::suscribe(Subscriber* s) {
     topic->subscribe(s);
     return true; // Retorna true si la suscripción fue exitosa
 }
+
+void Broker::publish(const std::string& topicName, const std::string& message) {
+    Topic* topic = createOrGetTopic(topicName);
+    if (topic) {
+        topic->publish(message);
+    }
+}

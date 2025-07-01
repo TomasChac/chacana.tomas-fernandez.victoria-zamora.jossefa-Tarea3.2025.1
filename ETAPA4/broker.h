@@ -13,6 +13,7 @@ class Broker {
         Broker();
         Topic* createOrGetTopic(string topicName);
         bool suscribe(Subscriber* s);
+        void publish(const std::string& topicName, const std::string& message);
     
     private:
         vector<Topic*> topics;

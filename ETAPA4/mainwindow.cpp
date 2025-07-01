@@ -91,11 +91,33 @@ void MainWindow::addVideoFollower() {
     if (broker->suscribe(sub)) {
         videoFollowers.append(sub);
         subLayout->addWidget(sub);
+
+        // Conectar la señal de abrirPestanaVideo a un slot lambda que crea y muestra la ventana de video
+        connect(sub, &VideoFollower::abrirPestanaVideo, this, [this, name](const QString& url){
+            QWidget* videoWindow = new QWidget;
+            videoWindow->setAttribute(Qt::WA_DeleteOnClose);
+            videoWindow->setWindowTitle(QString("Video: %1").arg(name));
+            videoWindow->resize(640, 480);
+
+            QVBoxLayout* layout = new QVBoxLayout(videoWindow);
+
+            QVideoWidget* videoWidget = new QVideoWidget(videoWindow);
+            QMediaPlayer* player = new QMediaPlayer(videoWindow);
+            player->setVideoOutput(videoWidget);
+            player->setSource(QUrl::fromUserInput(url));
+            player->play();
+
+            layout->addWidget(videoWidget);
+            videoWindow->setLayout(layout);
+
+            videoWindow->show();
+        });
     } else {
         QMessageBox::warning(this, "Error", "Tópico no encontrado");
         delete sub;
     }
 }
+
 
 void MainWindow::addGPSCarPublisher() {
     bool ok;

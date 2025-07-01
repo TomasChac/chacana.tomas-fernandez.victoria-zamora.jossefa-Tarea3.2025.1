@@ -17,14 +17,14 @@ public:
 
 public slots:
     // Sobrescribe el método update para cambiar el texto del botón
-    void update(const QString& message);
+    void update(const std::string& message);
 private slots:
-    void reproducirVideo();  // nuevo slot
+    void reproducirVideo();  
+signals:
+    void abrirPestanaVideo(const QString& url);
 
 private:
     QPushButton* boton;
-    QMediaPlayer* mediaPlayer;
-    QVideoWidget* videoWidget;
     QString ultimoUrl;
 };
 

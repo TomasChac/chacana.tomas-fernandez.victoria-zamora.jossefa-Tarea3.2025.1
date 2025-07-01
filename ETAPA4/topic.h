@@ -18,6 +18,7 @@ public:
     void notify(string message);
     bool isSubscribed(string name);
     string getTopicName();
+    void publish(const std::string& message);
 
 private:
     string topicName;

@@ -27,3 +27,9 @@ string Topic::getTopicName(){
     // Devuelve el nombre del topic
     return topicName;
 }
+
+void Topic::publish(const std::string& message) {
+    for (Subscriber* sub : subscribers) {
+        sub->update(message);
+    }
+}

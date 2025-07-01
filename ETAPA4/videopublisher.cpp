@@ -3,6 +3,7 @@
 #include <QString>
 #include <QLabel>
 #include <string>
+#include <QDebug>
 
 using namespace std;
 
@@ -29,6 +30,7 @@ VideoPublisher::VideoPublisher(std::string name, Broker* broker, std::string top
     connect(botonPublicar, &QPushButton::clicked, this, &VideoPublisher::publicarUrl);
     //Conecta el evento de presionar Enter en el campo de texto a publicarUrl()
     connect(campoUrl, &QLineEdit::returnPressed, this, &VideoPublisher::publicarUrl);
+    
 }
 
 void VideoPublisher::publicarUrl()
@@ -42,10 +44,10 @@ void VideoPublisher::publicarUrl()
     }
     // Llama al método publicar (de Publisher) con la URL como string estándar
     this->publicar(url.toStdString());
-
     // Emite la señal para notificar que se publicó una URL (útil para conectar con otros widgets)
     emit urlPublicada(url);
 
     // Limpia el campo de texto después de publicar
     campoUrl->clear();
 }
+
