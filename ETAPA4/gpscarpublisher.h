@@ -1,44 +1,38 @@
 #ifndef GPSCARPUBLISHER_H
 #define GPSCARPUBLISHER_H
-#include "publisher.h"
+
 #include <QWidget>
-#include <QTimer>
-#include <QPushButton>
-#include <QFileDialog>
 #include <vector>
-#include <string>
 
-using namespace std;
+class QPushButton;
+class QTimer;
 
-class GPSCarPublisher : public QWidget, public Publisher
+class GPSCarPublisher : public QWidget
 {
     Q_OBJECT
+
+private:
+    // Definimos la estructura aquí para que sea privada a esta clase
+    struct GPSData { double tiempo, x, y; };
+
 public:
-    explicit GPSCarPublisher(string name, Broker* broker, string topicName, QWidget* parent = nullptr);
+    explicit GPSCarPublisher(QWidget *parent = nullptr);
+
+signals:
+    void wantsToPublish(const QString& topic, const QString& message);
 
 private slots:
-    void cargarArchivoGPS(); // Slot para cargar datos desde un archivo
-    void publicarDatoGPS();    // Slot para publicar un dato GPS
+    void onCargarArchivo();
+    void onPublicarSiguientePunto();
 
 private:
-    void interpolarDatos(); // Slot para interpolar datos GPS
-private:
+    // La declaración ahora coincide con la implementación en el .cpp
+    void interpolarDatos(const std::vector<GPSData>& datosOriginales);
 
-    struct GPSData {
-    double tiempo;
-    double x;
-    double y;
-    };
-
-    std::vector<GPSData> gpsData; // Datos GPS del coche
-    std::vector<GPSData> datosInterpolados; // Datos GPS interpolados
-    QPushButton* botonCargar; // Botón para cargar datos desde un archivo
-    QPushButton* botonPublicar; // Botón para publicar los datos GPS
-    int currentIndex; // Índice del dato GPS actual a publicar
-    double elapsedTime; // Tiempo transcurrido desde el último envío
-    QTimer* timer; // Temporizador para publicar datos periódicamente
-
-
+    QPushButton *loadButton;
+    QTimer *timer;
+    std::vector<GPSData> datosInterpolados;
+    int currentIndex;
 };
 
-#endif // GPSCARPUBLISHER_H
+#endif

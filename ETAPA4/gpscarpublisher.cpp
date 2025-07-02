@@ -1,128 +1,95 @@
 #include "gpscarpublisher.h"
+#include <QPushButton>
+#include <QTimer>
 #include <QVBoxLayout>
-#include <QFile>
+#include <QLabel>
+#include <QFileDialog>
 #include <QTextStream>
 #include <QMessageBox>
-#include <QStringList>
-#include <QRegularExpression>
-#include <QLabel>
 
-// Estructura para almacenar un dato GPS
-struct GPSData {
-    double tiempo;
-    double x;
-    double y;
-};
-
-GPSCarPublisher::GPSCarPublisher(std::string name, Broker* broker, std::string topicName, QWidget* parent)
-    : QWidget(parent), Publisher(name, broker, topicName), currentIndex(0)
+GPSCarPublisher::GPSCarPublisher(QWidget *parent)
+    : QWidget(parent), currentIndex(0)
 {
-    // Crear Label con nombre 
-    QLabel* nameLabel = new QLabel(QString("Publisher: %1").arg(QString::fromStdString(name)), this);
-    botonCargar = new QPushButton("Cargar archivo GPS", this);
-    botonPublicar = new QPushButton("Iniciar publicación", this);
-    botonPublicar->setEnabled(false);
-
-    // Crear timer
+    loadButton = new QPushButton("Cargar Archivo GPS");
     timer = new QTimer(this);
 
-    // Layout
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(nameLabel); // Agrega el label arriba
-    layout->addWidget(botonCargar);
-    layout->addWidget(botonPublicar);
-    setLayout(layout);
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->addWidget(new QLabel("<b>Publicador (Tópico: GPS)</b>"));
+    layout->addWidget(loadButton);
 
-    // Conexiones
-    connect(botonCargar, &QPushButton::clicked, this, &GPSCarPublisher::cargarArchivoGPS);
-    connect(botonPublicar, &QPushButton::clicked, [this]() {
-        currentIndex = 0;
-        timer->start(1000); // Publicar cada 1 segundo
-    });
-    connect(timer, &QTimer::timeout, this, &GPSCarPublisher::publicarDatoGPS);
+    connect(loadButton, &QPushButton::clicked, this, &GPSCarPublisher::onCargarArchivo);
+    connect(timer, &QTimer::timeout, this, &GPSCarPublisher::onPublicarSiguientePunto);
 }
 
-void GPSCarPublisher::interpolarDatos()
-{
-    datosInterpolados.clear();
-    if (gpsData.empty()) return;
+void GPSCarPublisher::onCargarArchivo() {
+    QString filePath = QFileDialog::getOpenFileName(this, "Abrir archivo de posiciones", "", "Archivos de Texto (*.txt)");
+    if (filePath.isEmpty()) return;
 
-    for (size_t i = 0; i + 1 < gpsData.size(); ++i) {
-        const auto& a = gpsData[i];
-        const auto& b = gpsData[i + 1];
-
-        // Agrega el punto inicial
-        if (datosInterpolados.empty())
-            datosInterpolados.push_back(a);
-
-        int t0 = static_cast<int>(a.tiempo);
-        int t1 = static_cast<int>(b.tiempo);
-
-        for (int t = t0 + 1; t < t1; ++t) {
-            double alpha = (t - a.tiempo) / (b.tiempo - a.tiempo);
-            double x = a.x + alpha * (b.x - a.x);
-            double y = a.y + alpha * (b.y - a.y);
-            datosInterpolados.push_back({static_cast<double>(t), x, y});
-        }
-        // Agrega el punto final del segmento
-        datosInterpolados.push_back(b);
-    }
-}
-
-void GPSCarPublisher::cargarArchivoGPS()
-{
-    QString fileName = QFileDialog::getOpenFileName(this, "Selecciona archivo GPS", "", "Archivos de texto (*.txt);;Todos los archivos (*)");
-    if (fileName.isEmpty()) return;
-
-    QFile file(fileName);
+    QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QMessageBox::warning(this, "Error", "No se pudo abrir el archivo.");
         return;
     }
 
-    gpsData.clear();
+    std::vector<GPSData> datosOriginales;
     QTextStream in(&file);
-
-    // Leer el archivo línea por línea
     while (!in.atEnd()) {
-        QString line = in.readLine();
-        QStringList parts = line.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
-        if (parts.size() == 3) {
-            bool ok1, ok2, ok3;
-            double t = parts[0].toDouble(&ok1);
-            double x = parts[1].toDouble(&ok2);
-            double y = parts[2].toDouble(&ok3);
-            if (ok1 && ok2 && ok3) {
-                gpsData.push_back({t, x, y});
-            }
+        double t, x, y;
+        in >> t >> x >> y;
+        if (in.status() == QTextStream::Ok) {
+            datosOriginales.push_back({t, x, y});
         }
     }
     file.close();
 
-    // Interpolar después de cargar
-    interpolarDatos();
-    currentIndex = 0;
-
-    if (!datosInterpolados.empty()) {
-        botonPublicar->setEnabled(true);
-        QMessageBox::information(this, "Éxito", "Archivo cargado e interpolado correctamente.");
-    } else {
-        botonPublicar->setEnabled(false);
-        QMessageBox::warning(this, "Error", "No se encontraron datos válidos en el archivo.");
+    if(datosOriginales.size() < 2){
+        QMessageBox::warning(this, "Error", "El archivo debe contener al menos dos puntos de datos para interpolar.");
+        return;
     }
+
+    // AHORA LLAMAMOS AL MÉTODO DE INTERPOLACIÓN
+    interpolarDatos(datosOriginales);
+
+    // Reiniciamos el índice y comenzamos a publicar
+    currentIndex = 0;
+    timer->start(1000); // Publicar cada segundo
 }
 
-void GPSCarPublisher::publicarDatoGPS()
-{
-    if (currentIndex < datosInterpolados.size()) {
-        const auto& dato = datosInterpolados[currentIndex];
-        std::string mensaje = std::to_string(dato.tiempo) + " " +
-                              std::to_string(dato.x) + " " +
-                              std::to_string(dato.y);
-        this->publicar(mensaje);
-        currentIndex++;
-    } else {
-        timer->stop();
-        QMessageBox::information(this, "Fin", "Se han publicado todos los datos GPS.");
+void GPSCarPublisher::interpolarDatos(const std::vector<GPSData>& datosOriginales) {
+    datosInterpolados.clear();
+    
+    // Recorremos los segmentos (del punto i al i+1)
+    for (size_t i = 0; i < datosOriginales.size() - 1; ++i) {
+        const auto& p1 = datosOriginales[i];
+        const auto& p2 = datosOriginales[i+1];
+
+        int t_start = static_cast<int>(p1.tiempo);
+        int t_end = static_cast<int>(p2.tiempo);
+
+        // Agregamos el punto de inicio del segmento
+        datosInterpolados.push_back(p1);
+
+        // Calculamos los puntos intermedios para cada segundo
+        for (int t = t_start + 1; t < t_end; ++t) {
+            double ratio = (double)(t - t_start) / (double)(t_end - t_start);
+            double x_interp = p1.x + ratio * (p2.x - p1.x);
+            double y_interp = p1.y + ratio * (p2.y - p1.y);
+            datosInterpolados.push_back({(double)t, x_interp, y_interp});
+        }
     }
+    // Agregamos el último punto del recorrido
+    datosInterpolados.push_back(datosOriginales.back());
+}
+
+void GPSCarPublisher::onPublicarSiguientePunto() {
+    if (currentIndex >= datosInterpolados.size()) {
+        timer->stop();
+        QMessageBox::information(this, "Info", "Transmisión de GPS finalizada.");
+        return;
+    }
+
+    const auto& dato = datosInterpolados[currentIndex];
+    QString message = QString("%1 %2 %3").arg(dato.tiempo).arg(dato.x).arg(dato.y);
+    emit wantsToPublish("GPS", message);
+    currentIndex++;
 }

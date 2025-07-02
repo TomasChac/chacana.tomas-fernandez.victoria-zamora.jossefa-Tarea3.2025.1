@@ -1,39 +1,35 @@
 #include "gpscarfollower.h"
-#include <QDateTime>
-#include <QRegularExpression>
+#include "drawingwidget.h"
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QStringList>
 
-GPSCarFollower::GPSCarFollower(std::string name, std::string topicName, QWidget* parent)
-    : QWidget(parent), Subscriber(name, topicName)
-{
-
-    infoLabel = new QLabel("Esperando posición...", this);
-    QLabel* nameLabel = new QLabel(QString("Subscriber: %1").arg(QString::fromStdString(name)), this);
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(nameLabel); // Agrega el label arriba
-    layout->addWidget(new QLabel(QString("Seguimiento GPS de: %1").arg(QString::fromStdString(name)), this));
+GPSCarFollower::GPSCarFollower(QWidget *parent) : QWidget(parent) {
+    infoLabel = new QLabel("Esperando posición...");
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->addWidget(new QLabel("<b>Suscriptor (Tópico: GPS)</b>"));
     layout->addWidget(infoLabel);
-    setLayout(layout);
+    mapaWindow = new QWidget();
+    mapaWindow->setWindowTitle("Car Tracker (GPS)");
+    mapaWindow->setAttribute(Qt::WA_DeleteOnClose); // Se destruye al cerrar
+    mapaWidget = new DrawingWidget();
+    QVBoxLayout *mapaLayout = new QVBoxLayout(mapaWindow);
+    mapaLayout->addWidget(mapaWidget);
 }
 
-void GPSCarFollower::update(const QString& message)
-{
-    // Espera mensajes en formato: "<tiempo> <x> <y>"
-    QStringList parts = message.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
-    if (parts.size() >= 3) {
-        bool ok1, ok2, ok3;
-        double t = parts[0].toDouble(&ok1);
-        double x = parts[1].toDouble(&ok2);
-        double y = parts[2].toDouble(&ok3);
+void GPSCarFollower::onNewMessage(const QString& topic, const QString& message) {
+    if (topic != "GPS") return;
 
-        if (ok1 && ok2 && ok3) {
-            QString tiempo = QTime::currentTime().toString("HH:mm:ss");
-            infoLabel->setText(QString("[%1] Posición: %2, %3 (t=%4)")
-                               .arg(tiempo)
-                               .arg(x)
-                               .arg(y)
-                               .arg(t));
-            return;
-        }
+    QStringList parts = message.split(' ');
+    if (parts.size() < 3) return;
+
+    double t = parts[0].toDouble();
+    double x = parts[1].toDouble();
+    double y = parts[2].toDouble();
+
+    infoLabel->setText(QString("t: %1, x: %2, y: %3").arg(t).arg(x).arg(y));
+    mapaWidget->actualizarPosicion(QPointF(x, y));
+    if (!mapaWindow->isVisible()) {
+        mapaWindow->show();
     }
-    infoLabel->setText("Error en mensaje: " + message);
 }

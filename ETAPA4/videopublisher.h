@@ -1,28 +1,17 @@
 #ifndef VIDEOPUBLISHER_H
 #define VIDEOPUBLISHER_H
-
-#include "publisher.h"
 #include <QWidget>
-#include <string>
-#include <QLineEdit>
-#include <QPushButton>
+class QLineEdit;
 
-class VideoPublisher : public QWidget, public Publisher
-{
-
+class VideoPublisher : public QWidget {
     Q_OBJECT
 public:
-    explicit VideoPublisher(string name, Broker* broker, string topicName, QWidget* parent = nullptr);
-
+    explicit VideoPublisher(QWidget *parent = nullptr);
 signals:
-    void urlPublicada (const QString& url); // Cambiado a QString para compatibilidad con Qt
-
-public slots:
-    void publicarUrl();
-
+    void wantsToPublish(const QString& topic, const QString& message);
+private slots:
+    void onPublish();
 private:
-    QLineEdit* campoUrl;
-    QPushButton* botonPublicar;
-
+    QLineEdit *urlLineEdit;
 };
-#endif // VIDEOPUBLISHER_H
+#endif

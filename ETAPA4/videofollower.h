@@ -1,31 +1,35 @@
 #ifndef VIDEOFOLLOWER_H
 #define VIDEOFOLLOWER_H
 
-#include "subscriber.h"
 #include <QWidget>
-#include <QPushButton>
-#include <QString>
-#include <string>
 #include <QMediaPlayer>
-#include <QVideoWidget>
 
-class VideoFollower : public QWidget, public Subscriber
+class QPushButton;
+class QVideoWidget;
+
+class VideoFollower : public QWidget
 {
     Q_OBJECT
+
 public:
-    explicit VideoFollower(std::string name, std::string topicName, QWidget* parent = nullptr);
+    explicit VideoFollower(const QString& topic, QWidget *parent = nullptr);
 
 public slots:
-    // Sobrescribe el método update para cambiar el texto del botón
-    void update(const std::string& message);
+    // Slot que reacciona a los mensajes del broker
+    void onNewMessage(const QString& topic, const QString& message);
+
 private slots:
-    void reproducirVideo();  
-signals:
-    void abrirPestanaVideo(const QString& url);
+    // Slot que se activa al presionar el botón de play
+    void onPlayVideo();
 
 private:
-    QPushButton* boton;
-    QString ultimoUrl;
+    QString topicName;
+    QString lastUrl;
+    QPushButton *playButton;
+    
+    // Miembros para la reproducción de video
+    QMediaPlayer* mediaPlayer;
+    QVideoWidget* videoWidget;
 };
 
-#endif // VIDEOFOLLOWER_H
+#endif

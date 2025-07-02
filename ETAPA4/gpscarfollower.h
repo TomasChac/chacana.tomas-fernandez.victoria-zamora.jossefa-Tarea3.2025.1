@@ -1,24 +1,18 @@
 #ifndef GPSCARFOLLOWER_H
 #define GPSCARFOLLOWER_H
-
-#include "subscriber.h"
 #include <QWidget>
-#include <QLabel>
-#include <QString>
-#include <QVBoxLayout>
-#include <QObject>
+class QLabel;
+class DrawingWidget;
 
-class GPSCarFollower : public QWidget, public Subscriber
-{
+class GPSCarFollower : public QWidget {
     Q_OBJECT
 public:
-    explicit GPSCarFollower(std::string name, std::string topicName, QWidget* parent = nullptr);
-
+    explicit GPSCarFollower(QWidget *parent = nullptr);
 public slots:
-    void update(const QString& message); // Slot para recibir mensajes
-
+    void onNewMessage(const QString& topic, const QString& message);
 private:
     QLabel* infoLabel;
+    DrawingWidget* mapaWidget;
+    QWidget* mapaWindow;
 };
-
-#endif // GPSCARFOLLOWER_H
+#endif

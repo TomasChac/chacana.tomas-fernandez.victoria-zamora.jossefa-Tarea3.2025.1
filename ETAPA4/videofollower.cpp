@@ -1,39 +1,56 @@
 #include "videofollower.h"
+#include <QPushButton>
 #include <QVBoxLayout>
-#include <QString>
 #include <QLabel>
-#include "subscriber.h"
-// Constructor por defecto de la clase VideoFollower
-VideoFollower::VideoFollower(std::string name, std::string topicName, QWidget *parent)
-    : QWidget(parent), Subscriber(name, topicName)
+#include <QUrl>
+#include <QVideoWidget>
+#include <QDebug>
+
+VideoFollower::VideoFollower(const QString& topic, QWidget *parent)
+    : QWidget(parent), topicName(topic)
 {
-    QLabel* nameLabel = new QLabel(QString("Subscriber: %1").arg(QString::fromStdString(name)), this);
+    // Crear los widgets
+    playButton = new QPushButton("Esperando URL...");
+    mediaPlayer = new QMediaPlayer(this);
+    videoWidget = new QVideoWidget;
+    mediaPlayer->setVideoOutput(videoWidget);
 
-    boton = new QPushButton("Esperando URL", this);
-    //buton->setFixedSize(10, 10, 200, 50);
-    boton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    // Crear el layout y añadir los widgets
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->addWidget(new QLabel("<b>Suscriptor (Tópico: " + topic + ")</b>"));
+    layout->addWidget(playButton);
 
-    // Crear y configurar el layout vertical
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(boton);
-    setLayout(layout);
 
-    // Conectar el botón para reproducir el video al hacer clic
-    connect(boton, &QPushButton::clicked, this, &VideoFollower::reproducirVideo);
-    
+    // Conectar el clic del botón a la función que reproduce el video
+    connect(playButton, &QPushButton::clicked, this, &VideoFollower::onPlayVideo);
+
+    // especificar la señal 'error'
+    connect(mediaPlayer, QOverload<QMediaPlayer::Error>::of(&QMediaPlayer::error), this,
+        [this](QMediaPlayer::Error error) {
+            qDebug() << "--- ERROR DEL REPRODUCTOR ---";
+            qDebug() << "Código:" << error;
+            // Obtenemos el texto del error llamando a un método del reproductor.
+            qDebug() << "Mensaje:" << mediaPlayer->errorString();
+            qDebug() << "-----------------------------";
+    });
 }
-    // Sobrescribe el método update para cambiar el texto del botón
-void VideoFollower::update(const std::string& message)
-{   
-    QString qmsg = QString::fromStdString(message);
-    boton->setText(qmsg);
-    ultimoUrl = qmsg; // Guarda el último URL recibido
-}
 
-void VideoFollower::reproducirVideo()
+void VideoFollower::onNewMessage(const QString& topic, const QString& message)
 {
-    if (!ultimoUrl.isEmpty()) {
-        emit abrirPestanaVideo(ultimoUrl);
+    if (this->topicName == topic) {
+        lastUrl = message;
+        playButton->setText(lastUrl);
     }
 }
 
+void VideoFollower::onPlayVideo()
+{
+    if (!lastUrl.isEmpty()) {
+        videoWidget->setWindowTitle("Reproduciendo Video");
+        videoWidget->resize(800, 600);
+        videoWidget->setAttribute(Qt::WA_DeleteOnClose);
+        mediaPlayer->setMedia(QUrl(lastUrl));
+        videoWidget->show();
+        mediaPlayer->play();
+    }
+}

@@ -1,21 +1,19 @@
 #ifndef BROKER_H
 #define BROKER_H
+#include <QObject>
+#include <QString>
 
-#include <string>
-#include <vector>
-#include "Topic.h"
-#include "Subscriber.h"
-using namespace std;
-
-class Broker {
-
-    public:
-        Broker();
-        Topic* createOrGetTopic(string topicName);
-        bool suscribe(Subscriber* s);
-        void publish(const std::string& topicName, const std::string& message);
-    
-    private:
-        vector<Topic*> topics;
+class Broker : public QObject {
+    Q_OBJECT
+private:
+    Broker(QObject *parent = nullptr);
+public:
+    Broker(const Broker&) = delete;
+    void operator=(const Broker&) = delete;
+    static Broker& getInstance();
+public slots:
+    void publish(const QString& topic, const QString& message);
+signals:
+    void newMessage(const QString& topic, const QString& message);
 };
-#endif // BROKER_H
+#endif
