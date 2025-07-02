@@ -20,18 +20,15 @@ VideoFollower::VideoFollower(const QString& topic, QWidget *parent)
     layout->addWidget(new QLabel("<b>Suscriptor (Tópico: " + topic + ")</b>"));
     layout->addWidget(playButton);
 
-
-    // Conectar el clic del botón a la función que reproduce el video
+    // Conectar botón para reproducir
     connect(playButton, &QPushButton::clicked, this, &VideoFollower::onPlayVideo);
 
-    // especificar la señal 'error'
-    connect(mediaPlayer, QOverload<QMediaPlayer::Error>::of(&QMediaPlayer::error), this,
-        [this](QMediaPlayer::Error error) {
-            qDebug() << "--- ERROR DEL REPRODUCTOR ---";
-            qDebug() << "Código:" << error;
-            // Obtenemos el texto del error llamando a un método del reproductor.
-            qDebug() << "Mensaje:" << mediaPlayer->errorString();
-            qDebug() << "-----------------------------";
+
+    connect(mediaPlayer, &QMediaPlayer::errorOccurred, this, [this](QMediaPlayer::Error error) {
+        qDebug() << "--- ERROR DEL REPRODUCTOR ---";
+        qDebug() << "Codigo:" << error;
+        qDebug() << "Mensaje:" << mediaPlayer->errorString();
+        qDebug() << "-----------------------------";
     });
 }
 
@@ -49,7 +46,7 @@ void VideoFollower::onPlayVideo()
         videoWidget->setWindowTitle("Reproduciendo Video");
         videoWidget->resize(800, 600);
         videoWidget->setAttribute(Qt::WA_DeleteOnClose);
-        mediaPlayer->setMedia(QUrl(lastUrl));
+        mediaPlayer->setSource(QUrl(lastUrl));
         videoWidget->show();
         mediaPlayer->play();
     }

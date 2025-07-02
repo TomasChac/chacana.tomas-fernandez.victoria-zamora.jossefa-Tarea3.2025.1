@@ -1,4 +1,6 @@
 QT += core gui widgets multimedia multimediawidgets
+QT += multimedia multimediawidgets
+
 CONFIG += c++17
 TARGET = SimuladorGrafico
 
