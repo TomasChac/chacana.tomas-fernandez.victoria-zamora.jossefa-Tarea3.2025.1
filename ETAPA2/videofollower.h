@@ -6,6 +6,8 @@
 #include <QPushButton>
 #include <QString>
 #include <string>
+#include <QMediaPlayer>
+#include <QVideoWidget>
 
 class VideoFollower : public QWidget, public Subscriber
 {
@@ -16,9 +18,15 @@ public:
 public slots:
     // Sobrescribe el método update para cambiar el texto del botón
     void update(const QString& message);
+private slots:
+    void reproducirVideo();  // nuevo slot
+
+signals:
+    void abrirPestanaVideo(const QString& url);
 
 private:
     QPushButton* boton;
+    QString ultimoUrl;
 };
 
 #endif // VIDEOFOLLOWER_H
